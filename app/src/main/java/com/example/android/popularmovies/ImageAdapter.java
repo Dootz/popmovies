@@ -1,3 +1,4 @@
+//Based on https://developer.android.com/guide/topics/ui/layout/gridview.html
 package com.example.android.popularmovies;
 
 import android.content.Context;
