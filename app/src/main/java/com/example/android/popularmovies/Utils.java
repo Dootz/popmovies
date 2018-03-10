@@ -26,7 +26,7 @@ public class Utils {
     private static String TAG = "Utils";
     private static String baseImgUrl = "http://image.tmdb.org/t/p/";
     private static String imgSize = "w185";
-    private static String apiKey = "?api_key=PUT YOUR API KEY HERE";
+    private static String apiKey = "?api_key=YOUR API KEY HERE";
     private static String JSON_RESULTS = "results";
     private static String JSON_AVG = "vote_average";
     private static String JSON_TITLE = "title";
@@ -69,7 +69,7 @@ public class Utils {
             for(int i = 0; i < movies.length(); i++) {
                 JSONObject movieJSON = movies.getJSONObject(i);
                 String title = movieJSON.getString(JSON_TITLE);
-                Double voteAvg = movieJSON.getDouble(JSON_AVG);
+                String voteAvg = movieJSON.getString(JSON_AVG);
                 String description = movieJSON.getString(JSON_DESC);
                 String releaseDate = movieJSON.getString(JSON_RELEASE);
                 String posterPath = movieJSON.getString(JSON_POSTER);

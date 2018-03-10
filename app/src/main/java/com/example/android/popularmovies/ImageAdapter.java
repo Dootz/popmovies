@@ -10,20 +10,24 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by 1 on 10.03.2018.
  */
 
 public class ImageAdapter extends BaseAdapter {
     private Context mContext;
+    private List<Movie> mMovies;
 
-    public ImageAdapter(Context c) {
-        mContext = c;
+    public ImageAdapter(Context c, List<Movie> movies) {
+        mContext = c; mMovies = movies;
     }
 
     public int getCount() {
-        if(MainActivity.movieList != null)
-            return MainActivity.movieList.size();
+        if(mMovies != null)
+            return mMovies.size();
         return 0;
     }
 
@@ -47,10 +51,15 @@ public class ImageAdapter extends BaseAdapter {
         } else {
             imageView = (ImageView) convertView;
         }
-        if(MainActivity.movieList != null){
-            Picasso.with(mContext).load(Utils.getBasePicturePath()+MainActivity.movieList.get(position).getThumbnail()).into(imageView);
+        if(mMovies != null){
+            Picasso.with(mContext).load(Utils.getBasePicturePath()+mMovies.get(position).getThumbnail()).into(imageView);
             return imageView;
         }
         return null;
+    }
+
+    public void addItems(ArrayList<Movie> movieList){
+        this.mMovies = movieList;
+        notifyDataSetChanged();
     }
 }

@@ -21,22 +21,23 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
-    public static ArrayList<Movie> movieList;
+
     private boolean popularMovies;
+    private ArrayList<Movie> movieList;
     ImageAdapter imageAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        movieList = null;
         popularMovies = false;
         final Intent intent = new Intent(MainActivity.this, DetailActivity.class);
         GridView gridview = (GridView)findViewById(R.id.gridview);
-        imageAdapter = new ImageAdapter(this);
+        movieList = null;
+        imageAdapter = new ImageAdapter(this, movieList);
         gridview.setAdapter(imageAdapter);
         gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-               intent.putExtra("position", position);
+               intent.putExtra("movie", movieList.get(position));
                startActivity(intent);
             }
         });
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
             int j = 0;
             if ( s != null){
                 movieList = Utils.parseMoviesArrayFromJSON(s);
-                imageAdapter.notifyDataSetChanged();
+                imageAdapter.addItems(movieList);
             }
         }
     }
