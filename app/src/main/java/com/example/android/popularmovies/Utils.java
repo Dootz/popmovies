@@ -20,9 +20,9 @@ import okhttp3.Response;
  */
 
 public class Utils {
-    private static String baseUrl = "http://api.themoviedb.org/3/";
-    private static String movieRated = "movie/top_rated";
-    private static String moviePopular = "movie/popular";
+    private static String baseUrl = "http://api.themoviedb.org/3/movie/";
+    private static String movieRated = "top_rated";
+    private static String moviePopular = "popular";
     private static String TAG = "Utils";
     private static String baseImgUrl = "http://image.tmdb.org/t/p/";
     private static String imgSize = "w185";
@@ -33,6 +33,10 @@ public class Utils {
     private static String JSON_DESC = "overview";
     private static String JSON_RELEASE = "release_date";
     private static String JSON_POSTER = "poster_path";
+    private static String JSON_MOVIE_ID = "id";
+    private static String JSON_KEY = "key";
+    private static String movieVideos = "/videos";
+    private static String baseYoutubePath = "https://youtube.com/watch?v=";
 
     public static String assembleRequestURL(boolean popularMovies){
         StringBuilder url = new StringBuilder(baseUrl);
@@ -73,7 +77,8 @@ public class Utils {
                 String description = movieJSON.getString(JSON_DESC);
                 String releaseDate = movieJSON.getString(JSON_RELEASE);
                 String posterPath = movieJSON.getString(JSON_POSTER);
-                Movie movie = new Movie(title, posterPath, description, voteAvg, releaseDate);
+                String id = movieJSON.getString(JSON_MOVIE_ID);
+                Movie movie = new Movie(title, posterPath, description, voteAvg, releaseDate, id);
                 movieList.add(movie);
             }
         } catch (JSONException ex){
@@ -84,5 +89,26 @@ public class Utils {
 
     public static String getBasePicturePath(){
         return baseImgUrl+imgSize;
+    }
+
+    public static String getYoutubeLink(String id){
+        return baseUrl + id + movieVideos + apiKey;
+    }
+
+    public static String getBaseYoutubePath() {
+        return baseYoutubePath;
+    }
+
+    public static String parseYoutubeVideoResponse(String response){
+        try {
+            JSONObject root = new JSONObject(response);
+            JSONArray movies = root.getJSONArray(JSON_RESULTS);
+            String key = movies.getJSONObject(0).getString(JSON_KEY);
+            return key;
+
+        } catch(JSONException ex){
+            Log.v(TAG, "JSON parse exception at Youtube Video Link parsing");
+        }
+        return null;
     }
 }
