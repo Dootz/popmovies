@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean popularMovies;
     private ArrayList<Movie> movieList;
     ImageAdapter imageAdapter;
+    boolean favourites = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,12 +94,27 @@ public class MainActivity extends AppCompatActivity {
         switch(itemid){
             case R.id.action_popular:
                 popularMovies = true;
+                Update();
                 break;
             case R.id.action_rated:
                 popularMovies = false;
+                Update();
+                break;
+            case R.id.action_favourite:
+                LoadFavouriteMovies();
                 break;
         }
-        Update();
         return true;
+    }
+
+    private void LoadFavouriteMovies(){
+        ArrayList<Movie> favMovies= Utils.getFavouriteMovies(MainActivity.this);
+        if(favMovies.size() != 0)
+            imageAdapter.addItems(favMovies);
+        else{
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(this, "Empty Favourite List", duration);
+            toast.show();
+        }
     }
 }

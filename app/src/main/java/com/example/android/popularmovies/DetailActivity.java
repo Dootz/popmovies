@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,7 +35,8 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.poster)ImageView posterIV;
     @BindView(R.id.youtubeTrailerBT)Button trailerBT;
     @BindView(R.id.youtubeLink)TextView youtubeLinkTV;
-    String movieId;
+    @BindView(R.id.favorite_button)ImageButton favouriteBT;
+    int movieId;
     String youtubeId;
 
     @Override
@@ -54,6 +56,14 @@ public class DetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(youtubeId != null)
                     watchYoutubeVideo(DetailActivity.this, youtubeId);
+            }
+        });
+
+        favouriteBT.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(movieId != 0)
+                    Utils.saveFavouriteMovie(DetailActivity.this, movie);
             }
         });
     }

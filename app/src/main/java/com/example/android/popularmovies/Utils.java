@@ -1,7 +1,11 @@
 package com.example.android.popularmovies;
 
+import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.nfc.Tag;
+import android.provider.BaseColumns;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -10,6 +14,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -77,7 +82,7 @@ public class Utils {
                 String description = movieJSON.getString(JSON_DESC);
                 String releaseDate = movieJSON.getString(JSON_RELEASE);
                 String posterPath = movieJSON.getString(JSON_POSTER);
-                String id = movieJSON.getString(JSON_MOVIE_ID);
+                int id = movieJSON.getInt(JSON_MOVIE_ID);
                 Movie movie = new Movie(title, posterPath, description, voteAvg, releaseDate, id);
                 movieList.add(movie);
             }
@@ -91,7 +96,7 @@ public class Utils {
         return baseImgUrl+imgSize;
     }
 
-    public static String getYoutubeLink(String id){
+    public static String getYoutubeLink(int id){
         return baseUrl + id + movieVideos + apiKey;
     }
 
@@ -110,5 +115,56 @@ public class Utils {
             Log.v(TAG, "JSON parse exception at Youtube Video Link parsing");
         }
         return null;
+    }
+    public static void saveFavouriteMovie(Context mContext, Movie movie){
+        MovieDbHelper mDbHelper = new MovieDbHelper(mContext);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(MovieContract.MovieEntry.COLUMN_NAME_TITLE, movie.getTitle());
+        values.put(MovieContract.MovieEntry.COLUMN_NAME_THUMBNAIL, movie.getThumbnail());
+        values.put(MovieContract.MovieEntry.COLUMN_NAME_ID, movie.getId());
+        values.put(MovieContract.MovieEntry.COLUMN_NAME_RATING, movie.getRating());
+        values.put(MovieContract.MovieEntry.COLUMN_NAME_RELEASE, movie.getRelease());
+        values.put(MovieContract.MovieEntry.COLUMN_NAME_SYNOPSIS, movie.getSynopsis());
+
+        long newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
+    }
+
+    public static ArrayList<Movie> getFavouriteMovies(Context mContext){
+        MovieDbHelper mDbHelper = new MovieDbHelper(mContext);
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+
+        String[] projection = {
+                BaseColumns._ID,
+                MovieContract.MovieEntry.COLUMN_NAME_TITLE,
+                MovieContract.MovieEntry.COLUMN_NAME_THUMBNAIL,
+                MovieContract.MovieEntry.COLUMN_NAME_ID,
+                MovieContract.MovieEntry.COLUMN_NAME_RATING,
+                MovieContract.MovieEntry.COLUMN_NAME_RELEASE,
+                MovieContract.MovieEntry.COLUMN_NAME_SYNOPSIS
+        };
+
+        Cursor cursor = db.query(
+                MovieContract.MovieEntry.TABLE_NAME,   // The table to query
+                projection,             // The array of columns to return (pass null to get all)
+                null,              // The columns for the WHERE clause
+                null,          // The values for the WHERE clause
+                null,                   // don't group the rows
+                null,                   // don't filter by row groups
+                null               // The sort order
+        );
+
+        ArrayList<Movie> movies = new ArrayList<Movie>();
+        while(cursor.moveToNext()) {
+            int itemId = cursor.getInt(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_ID));
+            String rating = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_RATING));
+            String thumbnail = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_THUMBNAIL));
+            String release = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_RELEASE));
+            String synopsis = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_SYNOPSIS));
+            String title = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_TITLE));
+            movies.add(new Movie(title,thumbnail,synopsis,rating,release,itemId));
+        }
+        cursor.close();
+        return movies;
     }
 }

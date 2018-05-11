@@ -16,9 +16,9 @@ public class Movie implements Parcelable {
     private String synopsis;
     private String rating;
     private String release;
-    private String id;
+    private int id;
 
-    public Movie(String title, String thumbnail, String synopsis, String rating, String release, String id) {
+    public Movie(String title, String thumbnail, String synopsis, String rating, String release, int id) {
         this.title = title;
         this.thumbnail = thumbnail;
         this.synopsis = synopsis;
@@ -67,11 +67,11 @@ public class Movie implements Parcelable {
         this.release = release;
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -86,7 +86,7 @@ public class Movie implements Parcelable {
         dest.writeString(this.release);
         dest.writeString(this.thumbnail);
         dest.writeString(this.rating);
-        dest.writeString(this.id);
+        dest.writeInt(this.id);
     }
     // Parcelling part
     public Movie(Parcel in){
@@ -96,7 +96,7 @@ public class Movie implements Parcelable {
         this.release = in.readString();
         this.thumbnail = in.readString();
         this.rating = in.readString();
-        this.id = in.readString();
+        this.id = in.readInt();
     }
 
     public static final Parcelable.Creator CREATOR = new Parcelable.Creator() {
