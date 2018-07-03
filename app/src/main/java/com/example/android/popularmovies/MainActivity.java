@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean popularMovies;
     private ArrayList<Movie> movieList;
     ImageAdapter imageAdapter;
+    GridView gridview;
     boolean favourites = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         popularMovies = false;
         final Intent intent = new Intent(MainActivity.this, DetailActivity.class);
-        GridView gridview = (GridView)findViewById(R.id.gridview);
+        gridview = (GridView)findViewById(R.id.gridview);
         movieList = null;
         imageAdapter = new ImageAdapter(this, movieList);
         gridview.setAdapter(imageAdapter);
@@ -44,7 +45,8 @@ public class MainActivity extends AppCompatActivity {
                startActivity(intent);
             }
         });
-        Update();
+        if(!favourites)
+            Update();
     }
 
     public class GetMovieInfo extends AsyncTask<URL, Void, String> {
@@ -94,13 +96,16 @@ public class MainActivity extends AppCompatActivity {
         switch(itemid){
             case R.id.action_popular:
                 popularMovies = true;
+                favourites = false;
                 Update();
                 break;
             case R.id.action_rated:
                 popularMovies = false;
+                favourites = false;
                 Update();
                 break;
             case R.id.action_favourite:
+                favourites = true;
                 LoadFavouriteMovies();
                 break;
         }
@@ -109,8 +114,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void LoadFavouriteMovies(){
         ArrayList<Movie> favMovies= Utils.getFavouriteMovies(MainActivity.this);
-        if(favMovies.size() != 0)
+        if(favMovies.size() != 0) {
+            movieList = favMovies;
             imageAdapter.addItems(favMovies);
+            imageAdapter.notifyDataSetChanged();
+            gridview.setAdapter(imageAdapter);
+        }
         else{
             int duration = Toast.LENGTH_SHORT;
             Toast toast = Toast.makeText(this, "Empty Favourite List", duration);

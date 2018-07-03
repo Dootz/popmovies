@@ -41,6 +41,7 @@ public class Utils {
     private static String JSON_MOVIE_ID = "id";
     private static String JSON_KEY = "key";
     private static String movieVideos = "/videos";
+    private static String movieReviews = "/reviews";
     private static String baseYoutubePath = "https://youtube.com/watch?v=";
 
     public static String assembleRequestURL(boolean popularMovies){
@@ -92,6 +93,26 @@ public class Utils {
         return movieList;
     }
 
+    public static ArrayList<Review> getReviewsArrayFromJSON(String json){
+        ArrayList<Review> reviewsList = new ArrayList<>();
+        try {
+            JSONObject root = new JSONObject(json);
+            JSONArray reviews = root.getJSONArray(JSON_RESULTS);
+            if(reviews.length() == 0)
+                return null;
+            for(int i = 0; i < reviews.length(); i++) {
+                JSONObject reviewsJSON = reviews.getJSONObject(i);
+                String author = reviewsJSON.getString("author");
+                String content = reviewsJSON.getString("content");
+                reviewsList.add(new Review(content, author));
+            }
+        } catch (JSONException ex){
+            Log.v(TAG, "JSON parse exception");
+        }
+
+        return reviewsList;
+    }
+
     public static String getBasePicturePath(){
         return baseImgUrl+imgSize;
     }
@@ -99,6 +120,8 @@ public class Utils {
     public static String getYoutubeLink(int id){
         return baseUrl + id + movieVideos + apiKey;
     }
+
+    public static String getReviewsLink(int id) { return baseUrl + id + movieReviews + apiKey;}
 
     public static String getBaseYoutubePath() {
         return baseYoutubePath;
@@ -126,7 +149,7 @@ public class Utils {
         values.put(MovieContract.MovieEntry.COLUMN_NAME_RATING, movie.getRating());
         values.put(MovieContract.MovieEntry.COLUMN_NAME_RELEASE, movie.getRelease());
         values.put(MovieContract.MovieEntry.COLUMN_NAME_SYNOPSIS, movie.getSynopsis());
-
+        Log.v("REVIEW", "SAVING MOVIE ID = " + movie.getId());
         long newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
     }
 
@@ -163,6 +186,7 @@ public class Utils {
             String synopsis = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_SYNOPSIS));
             String title = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_TITLE));
             movies.add(new Movie(title,thumbnail,synopsis,rating,release,itemId));
+            Log.v("REVIEW", "READ item id " + itemId);
         }
         cursor.close();
         return movies;

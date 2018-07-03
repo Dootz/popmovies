@@ -36,6 +36,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.youtubeTrailerBT)Button trailerBT;
     @BindView(R.id.youtubeLink)TextView youtubeLinkTV;
     @BindView(R.id.favorite_button)ImageButton favouriteBT;
+    @BindView(R.id.reviewsTV)TextView reviewsTV;
     int movieId;
     String youtubeId;
 
@@ -49,6 +50,7 @@ public class DetailActivity extends AppCompatActivity {
         final Movie movie = mIntent.getExtras().getParcelable("movie");
         movieId = movie.getId();
         getYoutubeMovieId();
+        getReviews();
         UpdateDetailView(movie);
 
         trailerBT.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +111,32 @@ public class DetailActivity extends AppCompatActivity {
             int j = 0;
             if (s != null) {
                 youtubeId = Utils.parseYoutubeVideoResponse(s);
+            }
+        }
+    }
+
+    public void getReviews(){
+        new GetMovieReviews().execute();
+    }
+
+    public class GetMovieReviews extends AsyncTask<URL, Void, String> {
+        @Override
+        protected String doInBackground(URL... urls) {
+            String response = Utils.getResponse(Utils.getReviewsLink(movieId));
+            Log.v("TEST TEST", "Response" + response);
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            int j = 0;
+            if (s != null) {
+                ArrayList<Review> reviews = Utils.getReviewsArrayFromJSON(s);
+                if(reviews != null){
+                    reviewsTV.setText(reviews.get(0).content);
+                } else {
+                    reviewsTV.setText("No reviews");
+                }
             }
         }
     }
