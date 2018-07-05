@@ -127,12 +127,17 @@ public class Utils {
         return baseYoutubePath;
     }
 
-    public static String parseYoutubeVideoResponse(String response){
+    public static ArrayList<String> parseYoutubeVideoResponse(String response){
+        ArrayList<String> youtubeLinks = new ArrayList<>();
         try {
             JSONObject root = new JSONObject(response);
             JSONArray movies = root.getJSONArray(JSON_RESULTS);
-            String key = movies.getJSONObject(0).getString(JSON_KEY);
-            return key;
+            Log.v("REVIEW", "Length " + movies.length());
+            for (int i = 0; i < movies.length(); i++) {
+                youtubeLinks.add(movies.getJSONObject(i).getString(JSON_KEY));
+                Log.v("REVIEW", "Item added " + movies.getJSONObject(i).getString(JSON_KEY));
+            }
+            return youtubeLinks;
 
         } catch(JSONException ex){
             Log.v(TAG, "JSON parse exception at Youtube Video Link parsing");

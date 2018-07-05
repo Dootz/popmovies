@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 
@@ -34,12 +36,11 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.releaseDate)TextView releaseTV;
     @BindView(R.id.user_rating)TextView ratingTV;
     @BindView(R.id.poster)ImageView posterIV;
-    @BindView(R.id.youtubeTrailerBT)Button trailerBT;
-    @BindView(R.id.youtubeLink)TextView youtubeLinkTV;
     @BindView(R.id.favorite)CheckBox favouriteBT;
     @BindView(R.id.reviewsTV)TextView reviewsTV;
+    @BindView(R.id.linear_layout)LinearLayout mainLayout;
     int movieId;
-    String youtubeId;
+    ArrayList<String> youtubeId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,14 +59,6 @@ public class DetailActivity extends AppCompatActivity {
             favouriteBT.setChecked(true);
             Log.v("REVIEW", "MOVIE IS FAVOURITE");
         }
-
-        trailerBT.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(youtubeId != null)
-                    watchYoutubeVideo(DetailActivity.this, youtubeId);
-            }
-        });
 
         favouriteBT.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,8 +79,6 @@ public class DetailActivity extends AppCompatActivity {
             synopsisTV.setText(movie.getSynopsis());
             releaseTV.setText(movie.getRelease());
             ratingTV.setText(movie.getRating());
-            if(youtubeId != null)
-                youtubeLinkTV.setText(youtubeId);
             Picasso.with(this).load(Utils.getBasePicturePath() + movie.getThumbnail()).into(posterIV);
         }
     }
@@ -118,9 +109,24 @@ public class DetailActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            int j = 0;
             if (s != null) {
                 youtubeId = Utils.parseYoutubeVideoResponse(s);
+                int i = 1;
+                for (final String link:youtubeId
+                     ) {
+                    Button linkBT = new Button(DetailActivity.this);
+                    linkBT.setText("TRAILER " + i);
+                    linkBT.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));
+                    mainLayout.addView(linkBT);
+                    linkBT.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            watchYoutubeVideo(DetailActivity.this, link);
+                        }
+                    });
+                    Log.v("REVIEW", "BUTTON ADDED");
+                    i++;
+                }
             }
         }
     }

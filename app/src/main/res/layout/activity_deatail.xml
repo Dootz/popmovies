@@ -8,6 +8,7 @@
     tools:context="com.example.android.popularmovies.DetailActivity">
 <LinearLayout
     android:orientation="vertical"
+    android:id="@+id/linear_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <TextView
@@ -30,11 +31,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/poster"/>
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/youtubeTrailerBT"
-        android:text="@string/trailer"/>
     <CheckBox
         android:button="@android:drawable/btn_star"
         android:layout_width="wrap_content"
@@ -43,10 +39,6 @@
 
         android:background="@android:color/transparent"
         android:layout_gravity="center"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/youtubeLink"/>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
