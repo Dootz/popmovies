@@ -57,9 +57,19 @@ public class MovieContentProvider extends ContentProvider {
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues contentValues) {
 
         SQLiteDatabase db = movieDbHelper.getWritableDatabase();
-        long newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
 
-        return Uri.withAppendedPath(uri,String.valueOf(newRowId));
+        int match = uriMatcher.match(uri);
+        Log.v("REVIEW", "Uri insert " + uri.toString());
+        switch (match) {
+            case ENTRIES:
+                // Insert new values into the database
+                // Inserting values into tasks table
+                long newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
+                Log.v("REVIEW", "INSERT ROW " + newRowId);
+                return Uri.withAppendedPath(uri,String.valueOf(newRowId));
+        }
+        return null;
+
     }
 
     @Override

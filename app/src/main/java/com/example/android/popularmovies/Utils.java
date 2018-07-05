@@ -159,7 +159,9 @@ public class Utils {
         values.put(MovieContract.MovieEntry.COLUMN_NAME_RELEASE, movie.getRelease());
         values.put(MovieContract.MovieEntry.COLUMN_NAME_SYNOPSIS, movie.getSynopsis());
         Log.v("REVIEW", "SAVING MOVIE ID = " + movie.getId());
-        long newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
+        //long newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
+
+        Uri uri = mContext.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
     }
 
     public static void removeFavouriteMovie(Context mContext, Movie movie){
