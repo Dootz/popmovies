@@ -171,7 +171,9 @@ public class DetailActivity extends AppCompatActivity {
 
     private boolean checkIfMovieIsFavourite(){
         if(movieId != 0){
-            ArrayList<Movie> movies =  Utils.getFavouriteMovies(DetailActivity.this);
+            //ArrayList<Movie> movies =  Utils.getFavouriteMovies(DetailActivity.this);
+            ArrayList<Movie> movies = Utils.getFavouriteMoviesContentProvider(DetailActivity.this);
+            Log.v("REVIEW", "FAVOURITE MOVIES " + movies.size());
             for (Movie m: movies
                  ) {
                 if(m.getId() == movieId)

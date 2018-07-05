@@ -113,7 +113,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void LoadFavouriteMovies(){
-        ArrayList<Movie> favMovies= Utils.getFavouriteMovies(MainActivity.this);
+       // ArrayList<Movie> favMovies= Utils.getFavouriteMovies(MainActivity.this);
+        ArrayList<Movie> favMovies = Utils.getFavouriteMoviesContentProvider(MainActivity.this);
         if(favMovies.size() != 0) {
             movieList = favMovies;
             imageAdapter.addItems(favMovies);

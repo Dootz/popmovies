@@ -216,4 +216,27 @@ public class Utils {
         // COMPLETED (2) Delete a single row of data using a ContentResolver
         mContext.getContentResolver().delete(uri, null, null);
     }
+
+    public static ArrayList<Movie> getFavouriteMoviesContentProvider(Context mContext){
+
+        Cursor cursor = mContext.getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+                null,
+                null,
+                null,
+                null);
+        ArrayList<Movie> movies = new ArrayList<Movie>();
+        while(cursor.moveToNext()) {
+            int itemId = cursor.getInt(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_ID));
+            String rating = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_RATING));
+            String thumbnail = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_THUMBNAIL));
+            String release = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_RELEASE));
+            String synopsis = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_SYNOPSIS));
+            String title = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_TITLE));
+            movies.add(new Movie(title,thumbnail,synopsis,rating,release,itemId));
+            Log.v("REVIEW", "READ item id " + itemId);
+        }
+        cursor.close();
+        return movies;
+    }
+
 }
