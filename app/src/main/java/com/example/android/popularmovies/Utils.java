@@ -4,8 +4,11 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.nfc.Tag;
 import android.provider.BaseColumns;
+import android.provider.UserDictionary;
+import android.text.TextUtils;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -13,6 +16,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -201,5 +205,13 @@ public class Utils {
         }
         cursor.close();
         return movies;
+    }
+
+    public static void deleteTaskContentProvider(Context mContext, String stringId) {
+        Uri uri = MovieContract.MovieEntry.CONTENT_URI;
+        uri = uri.buildUpon().appendPath(stringId).build();
+
+        // COMPLETED (2) Delete a single row of data using a ContentResolver
+        mContext.getContentResolver().delete(uri, null, null);
     }
 }

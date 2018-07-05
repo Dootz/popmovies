@@ -66,8 +66,11 @@ public class DetailActivity extends AppCompatActivity {
                 if(movieId != 0) {
                     if(favouriteBT.isChecked())
                         Utils.saveFavouriteMovie(DetailActivity.this, movie);
-                    else
-                        Utils.removeFavouriteMovie(DetailActivity.this, movie);
+                    else {
+                        //Utils.removeFavouriteMovie(DetailActivity.this, movie);
+                        int id = movie.getId();
+                        Utils.deleteTaskContentProvider(DetailActivity.this, "" + id);
+                    }
                 }
             }
         });

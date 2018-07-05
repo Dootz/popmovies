@@ -13,6 +13,9 @@ import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
+
+import java.io.Console;
 
 /**
  * Created by 1 on 12.05.2018.
@@ -20,10 +23,13 @@ import android.text.TextUtils;
 
 public class MovieContentProvider extends ContentProvider {
     private MovieDbHelper movieDbHelper;
+
+    public static final int ENTRIES = 100;
+    public static final int SINGLE_ENTRY = 101;
     private static final UriMatcher uriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
     static {
-        uriMatcher.addURI("com.example.android.popularmovies", "entry", 1);
-        uriMatcher.addURI("com.example.android.popularmovies", "entry/#", 2);
+        uriMatcher.addURI("com.example.android.popularmovies", "entry", ENTRIES);
+        uriMatcher.addURI("com.example.android.popularmovies", "entry/#", SINGLE_ENTRY);
     }
 
     @Override
@@ -57,9 +63,40 @@ public class MovieContentProvider extends ContentProvider {
     }
 
     @Override
-    public int delete(@NonNull Uri uri, @Nullable String s, @Nullable String[] strings) {
+    public int delete (@NonNull Uri uri, String selection, String[]selectionArgs){
+
+        // Get access to the database and write URI matching code to recognize a single item
         SQLiteDatabase db = movieDbHelper.getWritableDatabase();
-        return db.delete(MovieContract.MovieEntry.TABLE_NAME,"_ID" + "=" + s, null);
+        Log.v("REVIEW", "Content uri " + uri.toString());
+        int match = uriMatcher.match(uri);
+        // Keep track of the number of deleted tasks
+        int tasksDeleted; // starts as 0
+
+        // Write the code to delete a single row of data
+        // [Hint] Use selections to delete an item by its row ID
+        switch (match) {
+            // Handle the single item case, recognized by the ID included in the URI path
+            case SINGLE_ENTRY:
+                // Get the task ID from the URI path
+                Log.v("REVIEW", "Uri matched");
+                String id = uri.getPathSegments().get(1);
+                // Use selections/selectionArgs to filter for this ID
+
+                tasksDeleted = db.delete(MovieContract.MovieEntry.TABLE_NAME, "movieId=?", new String[]{id});
+                break;
+            default:
+                throw new UnsupportedOperationException("Unknown uri: " + uri);
+        }
+
+        // Notify the resolver of a change and return the number of items deleted
+        if (tasksDeleted != 0) {
+            // A task was deleted, set notification
+            getContext().getContentResolver().notifyChange(uri, null);
+        }
+
+        // Return the number of tasks deleted
+        Log.v("REVIEW", "DELETED TASK " + tasksDeleted);
+        return tasksDeleted;
     }
 
     @Nullable
@@ -67,10 +104,10 @@ public class MovieContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
 
             switch (uriMatcher.match(uri)) {
-                case 1:
+                case ENTRIES:
                     if (TextUtils.isEmpty(sortOrder)) sortOrder = "_ID ASC";
                     break;
-                case 2:
+                case SINGLE_ENTRY:
                     selection = selection + "_ID = " + uri.getLastPathSegment();
                     break;
 
