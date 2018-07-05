@@ -59,13 +59,9 @@ public class MovieContentProvider extends ContentProvider {
         SQLiteDatabase db = movieDbHelper.getWritableDatabase();
 
         int match = uriMatcher.match(uri);
-        Log.v("REVIEW", "Uri insert " + uri.toString());
         switch (match) {
             case ENTRIES:
-                // Insert new values into the database
-                // Inserting values into tasks table
                 long newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, contentValues);
-                Log.v("REVIEW", "INSERT ROW " + newRowId);
                 return Uri.withAppendedPath(uri,String.valueOf(newRowId));
         }
         return null;
@@ -74,38 +70,22 @@ public class MovieContentProvider extends ContentProvider {
 
     @Override
     public int delete (@NonNull Uri uri, String selection, String[]selectionArgs){
-
-        // Get access to the database and write URI matching code to recognize a single item
         SQLiteDatabase db = movieDbHelper.getWritableDatabase();
-        Log.v("REVIEW", "Content uri " + uri.toString());
         int match = uriMatcher.match(uri);
-        // Keep track of the number of deleted tasks
-        int tasksDeleted; // starts as 0
-
-        // Write the code to delete a single row of data
-        // [Hint] Use selections to delete an item by its row ID
+        int tasksDeleted;
         switch (match) {
-            // Handle the single item case, recognized by the ID included in the URI path
             case SINGLE_ENTRY:
-                // Get the task ID from the URI path
-                Log.v("REVIEW", "Uri matched");
                 String id = uri.getPathSegments().get(1);
-                // Use selections/selectionArgs to filter for this ID
-
                 tasksDeleted = db.delete(MovieContract.MovieEntry.TABLE_NAME, "movieId=?", new String[]{id});
                 break;
             default:
                 throw new UnsupportedOperationException("Unknown uri: " + uri);
         }
 
-        // Notify the resolver of a change and return the number of items deleted
         if (tasksDeleted != 0) {
-            // A task was deleted, set notification
             getContext().getContentResolver().notifyChange(uri, null);
         }
 
-        // Return the number of tasks deleted
-        Log.v("REVIEW", "DELETED TASK " + tasksDeleted);
         return tasksDeleted;
     }
 
@@ -127,13 +107,13 @@ public class MovieContentProvider extends ContentProvider {
         SQLiteDatabase db = movieDbHelper.getReadableDatabase();
 
         Cursor cursor = db.query(
-                MovieContract.MovieEntry.TABLE_NAME,   // The table to query
-                projection,             // The array of columns to return (pass null to get all)
-                selection,              // The columns for the WHERE clause
-                selectionArgs,          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                sortOrder               // The sort order
+                MovieContract.MovieEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
         );
         return cursor;
     }

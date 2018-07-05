@@ -158,7 +158,6 @@ public class Utils {
         values.put(MovieContract.MovieEntry.COLUMN_NAME_RATING, movie.getRating());
         values.put(MovieContract.MovieEntry.COLUMN_NAME_RELEASE, movie.getRelease());
         values.put(MovieContract.MovieEntry.COLUMN_NAME_SYNOPSIS, movie.getSynopsis());
-        Log.v("REVIEW", "SAVING MOVIE ID = " + movie.getId());
         //long newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
 
         Uri uri = mContext.getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
@@ -203,7 +202,6 @@ public class Utils {
             String synopsis = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_SYNOPSIS));
             String title = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_TITLE));
             movies.add(new Movie(title,thumbnail,synopsis,rating,release,itemId));
-            Log.v("REVIEW", "READ item id " + itemId);
         }
         cursor.close();
         return movies;
@@ -213,7 +211,6 @@ public class Utils {
         Uri uri = MovieContract.MovieEntry.CONTENT_URI;
         uri = uri.buildUpon().appendPath(stringId).build();
 
-        // COMPLETED (2) Delete a single row of data using a ContentResolver
         mContext.getContentResolver().delete(uri, null, null);
     }
 
@@ -233,7 +230,6 @@ public class Utils {
             String synopsis = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_SYNOPSIS));
             String title = cursor.getString(cursor.getColumnIndexOrThrow(MovieContract.MovieEntry.COLUMN_NAME_TITLE));
             movies.add(new Movie(title,thumbnail,synopsis,rating,release,itemId));
-            Log.v("REVIEW", "READ item id " + itemId);
         }
         cursor.close();
         return movies;

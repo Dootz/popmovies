@@ -57,7 +57,6 @@ public class DetailActivity extends AppCompatActivity {
 
         if(checkIfMovieIsFavourite() == true){
             favouriteBT.setChecked(true);
-            Log.v("REVIEW", "MOVIE IS FAVOURITE");
         }
 
         favouriteBT.setOnClickListener(new View.OnClickListener() {
@@ -90,7 +89,6 @@ public class DetailActivity extends AppCompatActivity {
         Intent appIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("vnd.youtube:" + id));
         Intent webIntent = new Intent(Intent.ACTION_VIEW,
                 Uri.parse(Utils.getBaseYoutubePath() + id));
-        Log.v("TEST TEST TEST", "URL" + Utils.getBaseYoutubePath() + id);
         try {
             context.startActivity(appIntent);
         } catch (ActivityNotFoundException ex) {
@@ -106,7 +104,6 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(URL... urls) {
             String response = Utils.getResponse(Utils.getYoutubeLink(movieId));
-            Log.v("TEST TEST", "Response" + response);
             return response;
         }
 
@@ -127,7 +124,6 @@ public class DetailActivity extends AppCompatActivity {
                             watchYoutubeVideo(DetailActivity.this, link);
                         }
                     });
-                    Log.v("REVIEW", "BUTTON ADDED");
                     i++;
                 }
             }
@@ -142,7 +138,6 @@ public class DetailActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(URL... urls) {
             String response = Utils.getResponse(Utils.getReviewsLink(movieId));
-            Log.v("TEST TEST", "Response" + response);
             return response;
         }
 
@@ -151,7 +146,6 @@ public class DetailActivity extends AppCompatActivity {
             if (s != null) {
                 ArrayList<Review> reviews = Utils.getReviewsArrayFromJSON(s);
                 if(reviews != null){
-                    Log.v("REVIEW", "No of reviews " + reviews.size());
                     int i = 1;
                     for (Review r:reviews
                             ) {
@@ -173,7 +167,6 @@ public class DetailActivity extends AppCompatActivity {
         if(movieId != 0){
             //ArrayList<Movie> movies =  Utils.getFavouriteMovies(DetailActivity.this);
             ArrayList<Movie> movies = Utils.getFavouriteMoviesContentProvider(DetailActivity.this);
-            Log.v("REVIEW", "FAVOURITE MOVIES " + movies.size());
             for (Movie m: movies
                  ) {
                 if(m.getId() == movieId)
