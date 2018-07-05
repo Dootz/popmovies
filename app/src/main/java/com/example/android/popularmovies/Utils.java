@@ -153,6 +153,12 @@ public class Utils {
         long newRowId = db.insert(MovieContract.MovieEntry.TABLE_NAME, null, values);
     }
 
+    public static void removeFavouriteMovie(Context mContext, Movie movie){
+        MovieDbHelper mDbHelper = new MovieDbHelper(mContext);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.delete(MovieContract.MovieEntry.TABLE_NAME, MovieContract.MovieEntry.COLUMN_NAME_ID + " =" + movie.getId(), null);
+    }
+
     public static ArrayList<Movie> getFavouriteMovies(Context mContext){
         MovieDbHelper mDbHelper = new MovieDbHelper(mContext);
         SQLiteDatabase db = mDbHelper.getReadableDatabase();

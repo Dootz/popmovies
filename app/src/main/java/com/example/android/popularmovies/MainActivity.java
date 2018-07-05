@@ -126,4 +126,11 @@ public class MainActivity extends AppCompatActivity {
             toast.show();
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(favourites)
+            LoadFavouriteMovies();
+    }
 }

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -35,7 +36,7 @@ public class DetailActivity extends AppCompatActivity {
     @BindView(R.id.poster)ImageView posterIV;
     @BindView(R.id.youtubeTrailerBT)Button trailerBT;
     @BindView(R.id.youtubeLink)TextView youtubeLinkTV;
-    @BindView(R.id.favorite_button)ImageButton favouriteBT;
+    @BindView(R.id.favorite)CheckBox favouriteBT;
     @BindView(R.id.reviewsTV)TextView reviewsTV;
     int movieId;
     String youtubeId;
@@ -53,6 +54,11 @@ public class DetailActivity extends AppCompatActivity {
         getReviews();
         UpdateDetailView(movie);
 
+        if(checkIfMovieIsFavourite() == true){
+            favouriteBT.setChecked(true);
+            Log.v("REVIEW", "MOVIE IS FAVOURITE");
+        }
+
         trailerBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,8 +70,12 @@ public class DetailActivity extends AppCompatActivity {
         favouriteBT.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(movieId != 0)
-                    Utils.saveFavouriteMovie(DetailActivity.this, movie);
+                if(movieId != 0) {
+                    if(favouriteBT.isChecked())
+                        Utils.saveFavouriteMovie(DetailActivity.this, movie);
+                    else
+                        Utils.removeFavouriteMovie(DetailActivity.this, movie);
+                }
             }
         });
     }
@@ -139,5 +149,17 @@ public class DetailActivity extends AppCompatActivity {
                 }
             }
         }
+    }
+
+    private boolean checkIfMovieIsFavourite(){
+        if(movieId != 0){
+            ArrayList<Movie> movies =  Utils.getFavouriteMovies(DetailActivity.this);
+            for (Movie m: movies
+                 ) {
+                if(m.getId() == movieId)
+                    return true;
+            }
+        }
+        return false;
     }
 }
