@@ -145,11 +145,20 @@ public class DetailActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String s) {
-            int j = 0;
             if (s != null) {
                 ArrayList<Review> reviews = Utils.getReviewsArrayFromJSON(s);
                 if(reviews != null){
-                    reviewsTV.setText(reviews.get(0).content);
+                    Log.v("REVIEW", "No of reviews " + reviews.size());
+                    int i = 1;
+                    for (Review r:reviews
+                            ) {
+                        TextView reviewTV = new TextView(DetailActivity.this);
+                        reviewTV.setText("\nREVIEW " + i + "\n" + r.content);
+                        reviewTV.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT));
+                        mainLayout.addView(reviewTV);
+                        reviewsTV.setVisibility(View.GONE);
+                        i++;
+                    }
                 } else {
                     reviewsTV.setText("No reviews");
                 }
